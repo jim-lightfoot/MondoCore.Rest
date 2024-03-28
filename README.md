@@ -1,9 +1,8 @@
 # MondoCore.Rest
   Class/interface for calling REST apis
-
 <br>
 
-### Dependency Injection
+## Dependency Injection
 
  - In your dependency injection code create an instance of an api. 
      - Each unique api should be a different instance of RestApi. 
@@ -51,7 +50,7 @@
 
 <br>
 
-### Calling an API with IRestApi
+## Calling an API with IRestApi
 
 Inject the IRestApi interface into your class
  
@@ -79,6 +78,43 @@ Inject the IRestApi interface into your class
 
 
 <br>
+
+## Reference
+
+#### IRestAPI<T>
+Interface used to call REST API. Note that generic type isn't actually used in the interface itself, it's just used to differentiate apis in dependency injection.
+
+###### Task SendRequest<TRequest>(HttpMethod method, string url, TRequest? content = default(TRequest?), object? headers = null)
+No need to call this directly. See the default interface methods below.
+
+###### Task<TResponse> SendRequest<TRequest, TResponse>(HttpMethod method, string url, TRequest? content = default(TRequest?), object? headers = null);
+No need to call this directly. See the default interface methods below.
+
+##### Default Methods
+
+###### Task<T> Get<T>(string url, object? headers = null)
+Does a GET request to the api. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task<TResponse> Post<TRequest, TResponse>(string url, TRequest content, object? headers = null)
+Does a POST request to the api that returns a response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task Post<TRequest>(string url, TRequest content, object? headers = null)
+Does a POST request to the api thats returns no response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task<TResponse> Put<TRequest, TResponse>(string url, TRequest content, object? headers = null)
+Does a PUT request to the api that returns a response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task Put<TRequest>(string url, TRequest content, object? headers = null)
+Does a PUT request to the api thats returns no response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task<TResponse> Patch<TRequest, TResponse>(string url, TRequest content, object? headers = null)
+Does a PATCH request to the api that returns a response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task Patch<TRequest>(string url, TRequest content, object? headers = null)
+Does a PATCH request to the api thats returns no response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
+
+###### Task Delete<TRequest>(string url, object? headers = null)
+Does a DELETE request to the api thats returns no response. Note that url is appended to the url defined in dependency injection. "headers" can be a POCO, anonymous object or a dictionary
 
 License
 ----
