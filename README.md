@@ -8,42 +8,46 @@
  - In your dependency injection code create an instance of an api. 
      - Each unique api should be a different instance of RestApi. 
      - Differentiate each api by using a different class.
+     
+  <br/>
 
-    public class Program
-    {
-        public static void Main(string[] args)
+
+ 
+        public class Program
         {
-            var builder = WebApplication.CreateBuilder(args);
+            public static void Main(string[] args)
+            {
+                var builder = WebApplication.CreateBuilder(args);
 
-            // ...
+                // ...
 
-            builder.Services.AddHttpClient();
+                builder.Services.AddHttpClient();
 
-            // Register the apis. Automobile and Truck are just used to differentiate apis and can be blank classes
-            builder.Services.AddRestApi<Automobile>("cars", "https://www.notrealcars.com)
-                            .AddRestApi<Truck>("trucks", "https://www.notrealtrucks.com);
+                // Register the apis. Automobile and Truck are just used to differentiate apis and can be blank classes
+                builder.Services.AddRestApi<Automobile>("cars", "https://www.notrealcars.com)
+                                .AddRestApi<Truck>("trucks", "https://www.notrealtrucks.com);
 
-            // ...
+                // ...
+            }
         }
-    }
 
-    public static class Extensions
-    {
-        public static IServiceCollection AddRestApi<T>(this IServiceCollection services, string name, string url)
+        public static class Extensions
         {
-            // Register the api and url with the HttpClientFactory
-            services.AddHttpClient(name: name, configureClient: (p, client) =>
-                    {
-                        client.BaseAddress = new Uri(url);
-                        client.Timeout = TimeSpan.FromSeconds(60);
-                    });
+            public static IServiceCollection AddRestApi<T>(this IServiceCollection services, string name, string url)
+            {
+                // Register the api and url with the HttpClientFactory
+                services.AddHttpClient(name: name, configureClient: (p, client) =>
+                        {
+                            client.BaseAddress = new Uri(url);
+                            client.Timeout = TimeSpan.FromSeconds(60);
+                        });
 
-            // Now inject the RestApi class
-            services.AddScoped<IRestApi<T>>( p=> new RestApi<T>(p.GetRequiredService<IHttpClientFactory>(), name));
+                // Now inject the RestApi class
+                services.AddScoped<IRestApi<T>>( p=> new RestApi<T>(p.GetRequiredService<IHttpClientFactory>(), name));
 
-            return services;
+                return services;
+            }
         }
-    }
 
 <br>
 
