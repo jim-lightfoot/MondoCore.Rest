@@ -12,6 +12,7 @@
     <RepositoryType>git</RepositoryType>
     <Description>Class/interface for calling REST apis</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
