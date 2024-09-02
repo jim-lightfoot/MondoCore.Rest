@@ -17,12 +17,14 @@ namespace MondoCore.Rest
     public class RestApi<TAPI> :  IRestApi<TAPI>
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHeaderFactory? _headerFactory;
         private readonly string _name;
 
          /*************************************************************************/
-        public RestApi(IHttpClientFactory httpClientFactory, string name)
+        public RestApi(IHttpClientFactory httpClientFactory, string name, IHeaderFactory? headerFactory = null)
         {
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _headerFactory     = headerFactory;
 
             if(string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException(nameof(name));
@@ -55,6 +57,18 @@ namespace MondoCore.Rest
         #region Private
 
         /*************************************************************************/
+        private static void AddHeaders(HttpRequestMessage request, IDictionary<string, string> headers)
+        {
+            if(headers != null)
+            {
+                foreach (var kv in headers)
+                    request.Headers.Add(kv.Key, kv.Value);
+            }
+
+            return;
+        }
+
+        /*************************************************************************/
         protected virtual async Task<HttpResponseMessage> InternalSendRequest<TRequest>(HttpMethod method, string url, TRequest content, object? headers)
         {
             using(var client = _httpClientFactory.CreateClient(_name))
@@ -62,11 +76,13 @@ namespace MondoCore.Rest
                 var request = new HttpRequestMessage(method, url);
 
                 if(headers != null)
-                {
-                    var dHeaders = headers.ToDictionary();
+                    AddHeaders(request, headers.ToStringDictionary());
 
-                    foreach(var kv in dHeaders!)
-                        request.Headers.Add(kv.Key, kv.Value.ToString());
+                if(_headerFactory != null)
+                { 
+                    var dHeaders = await _headerFactory.GetHeaders(_name).ConfigureAwait(false);
+
+                    AddHeaders(request, dHeaders);
                 }
 
                 // Set up the content

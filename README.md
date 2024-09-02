@@ -7,6 +7,7 @@
  - In your dependency injection code create an instance of an api. 
      - Each unique api should be a different instance of RestApi. 
      - Differentiate each api by using a different class.
+     - You can pass in an optional IHeaderFactory. This is used to insert headers, e.g. a bearer token, at request time.
      
   <br/>
 
@@ -24,7 +25,7 @@
 
                 // Register the apis. Automobile and Truck are just used to differentiate apis and can be blank classes
                 builder.Services.AddRestApi<Automobile>("cars", "https://www.notrealcars.com)
-                                .AddRestApi<Truck>("trucks", "https://www.notrealtrucks.com);
+                                .AddRestApi<Truck>("trucks", "https://www.notrealtrucks.com, myHeaderFactory);
 
                 // ...
             }
@@ -60,7 +61,7 @@ Inject the IRestApi interface into your class
     {
         private readonly IRestApi<Automoble> _api;
 
-        public CoolClass(IRestApi<Automoble> api)
+        public CarService(IRestApi<Automoble> api)
         {
             _api = api;
         }
@@ -82,7 +83,7 @@ Inject the IRestApi interface into your class
 ## Reference
 
 ### IRestAPI<T>
-Interface used to call REST API. Note that generic type isn't actually used in the interface itself, it's just used to differentiate apis in dependency injection.
+Interface used to call REST API. Note that the generic type isn't actually used in the interface itself, it's just used to differentiate apis in dependency injection.
 
 ##### Task SendRequest<TRequest>(HttpMethod method, string url, TRequest? content = default(TRequest?), object? headers = null)
 No need to call this directly. See the default interface methods below.

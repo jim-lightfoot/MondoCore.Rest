@@ -60,6 +60,27 @@ namespace MondoCore.Rest.UnitTests
         }
 
         [TestMethod]
+        public async Task RestApi_Get_wHeaders()
+        {
+            var factory = new Mock<IHttpClientFactory>();
+            var headerFactory = new Mock<IHeaderFactory>();
+            using var client = new HttpClient();
+
+            factory.Setup(f => f.CreateClient("test1")).Returns(client);
+            headerFactory.Setup(f => f.GetHeaders("test1")).ReturnsAsync(new Dictionary<string, string> { { "bobs", "youruncle" } });
+
+            client.BaseAddress = new Uri("https://datos.comunidad.madrid");
+
+            IRestApi<string> api = new RestApi<string>(factory.Object, "test1", headerFactory.Object);
+            var result = await api.Get<MunicipioResponse>("catalogo/dataset/032474a0-bf11-4465-bb92-392052962866/resource/301aed82-339b-4005-ab20-06db41ee7017/download/municipio_comunidad_madrid.json");
+ 
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.data);
+            Assert.AreNotEqual(0, result!.data!.Length);
+            Assert.AreEqual("Sierra Norte", result.data?[0].nuts4_nombre);
+        }
+
+        [TestMethod]
         [DataRow("Bob's your uncle")]
         [DataRow("Fred's your aunt")]
         public async Task RestApi_Get_text(string response)
