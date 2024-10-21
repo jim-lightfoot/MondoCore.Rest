@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MondoCore.Rest
@@ -9,7 +10,7 @@ namespace MondoCore.Rest
     /// Interface for rest APIs
     /// </summary>
     /// <typeparam name="TAPI">A generic type to differentiate apis in dependency injection. Not actually used</typeparam>
-    public interface IRestApi<TAPI>
+    public interface IRestApi<TAPI> : IDisposable
     {
         Task            SendRequest<TRequest>(HttpMethod method, string url, TRequest? content = default(TRequest?), object? headers = null);
         Task<TResponse> SendRequest<TRequest, TResponse>(HttpMethod method, string url, TRequest? content = default(TRequest?), object? headers = null);

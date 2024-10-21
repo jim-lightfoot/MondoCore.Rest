@@ -18,6 +18,11 @@ namespace MondoCore.Rest
         }
 
         /*************************************************************************/
+        public RestException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
+        /*************************************************************************/
         public HttpStatusCode   StatusCode { get; set; }
         public string           Url        { get; set; } = "";
         public object?          Headers    { get; set; }
